@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "board"
+version = "0.1.0"
+packages = [
+    { include = "apps" },
+    { include = "config" }
+]
+package-mode = false
+description = "Backend for classified ads board using Django, DRF, JWT, Celery, Redis, Docker, and Yandex Cloud"
+authors = ["Your Name <your.email@example.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+Django = "^5.1"
+djangorestframework = "^3.15"
+djangorestframework-simplejwt = "^5.5.1"
+psycopg2-binary = "^2.9"
+celery = "^5.5"
+redis = "^4.5"
+django-cors-headers = "^4.0"
+python-dotenv = "^1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3"
+pytest-django = "^4.5"
+black = "^23.3"
+isort = "^5.12"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

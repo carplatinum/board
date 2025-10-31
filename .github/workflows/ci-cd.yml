@@ -1,0 +1,70 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: board_db
+          POSTGRES_USER: board_user
+          POSTGRES_PASSWORD: board_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run migrations
+        run: poetry run python manage.py migrate
+
+      - name: Run tests
+        run: poetry run pytest
+
+      - name: Build Docker image
+        run: docker build -t board:latest .
+
+      - name: Login to Yandex Cloud Container Registry
+        uses: yc-actions/yc-coi-login@v1
+        with:
+          token: ${{ secrets.YC_TOKEN }}
+
+      - name: Push Docker image to Yandex Container Registry
+        run: |
+          docker tag board:latest cr.yandex/$YC_REGISTRY_ID/board:latest
+          docker push cr.yandex/$YC_REGISTRY_ID/board:latest
+
+      - name: Deploy to Yandex Cloud VM
+        uses: yc-actions/yc-coi-deploy@v1
+        with:
+          token: ${{ secrets.YC_TOKEN }}
+          vm_id: ${{ secrets.YC_VM_ID }}
+          container_image: cr.yandex/$YC_REGISTRY_ID/board:latest

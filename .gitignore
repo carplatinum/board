@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+.venv/
+.env
+*.sqlite3
+
+# Django
+*.log
+*.pot
+*.pyc
+staticfiles/
+media/
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Docker
+*.env
+docker-compose.override.yml
+
+# Logs
+*.log
+
+# Celery
+celerybeat-schedule
+
+# Byte-compiled / Cache
+__pycache__/
+*.py[cod]
+*$py.class
