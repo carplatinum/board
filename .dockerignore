@@ -1,0 +1,48 @@
+# Игнорируем папки виртуальных окружений
+venv/
+.env
+env/
+.venv/
+
+# Игнорируем системные и IDE файлы
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
+
+# Игнорируем git файлы
+.git
+.gitignore
+.gitmodules
+
+# Логи и временные файлы
+*.log
+*.pot
+*.mo
+*.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Node_modules или фронтенд, если есть
+node_modules/
+npm-debug.log*
+
+# Статические файлы (если собираете отдельно)
+staticfiles/
+static/
+media/
+
+# Dockerfile и docker-compose файлы, если не нужны внутри контейнера
+.Dockerfile*
+docker-compose*.yml

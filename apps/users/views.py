@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import User
 from .serializers import UserSerializer
 
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API для управления пользователями.

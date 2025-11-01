@@ -1,0 +1,39 @@
+[flake8]
+
+# Исключаем папки и файлы
+exclude =
+    .git,
+    __pycache__,
+    migrations,
+    node_modules,
+    static,
+    media,
+    env,
+    venv,
+    .venv,
+    *.pyc,
+    *.egg-info,
+    build,
+    dist
+
+# Максимальная длина строки
+max-line-length = 120
+
+# Игнорируем некоторые ошибки, например E402 - импорт не на первой строке,
+# E501 - длина строки, W503 - перенос оператора (конкретные правила можно менять)
+ignore =
+    E402,
+    E501,
+    W503
+
+# Максимальная сложность кода
+max-complexity = 10
+
+# Выводить только ошибки в формате pep8 (анализаторы pyflakes, pycodestyle)
+select = B,C,E,F,W,T4,B9
+
+# Игнорируем ошибки импорта в файлах настроек Django
+per-file-ignores =
+    config/settings/__init__.py: F403,F401
+    config/settings/development.py: F403,F401
+    config/settings/production.py: F403,F401

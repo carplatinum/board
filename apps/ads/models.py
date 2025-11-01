@@ -1,6 +1,7 @@
 from django.db import models
 from apps.users.models import User
 
+
 class Ad(models.Model):
     """
     Модель объявления.

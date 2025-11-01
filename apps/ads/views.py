@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions
 from .models import Ad
 from .serializers import AdSerializer
 
+
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Разрешение: только владелец может изменять объявление.
@@ -11,6 +12,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.owner == request.user
+
 
 class AdViewSet(viewsets.ModelViewSet):
     """

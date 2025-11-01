@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Ad
 
+
 class AdSerializer(serializers.ModelSerializer):
     """
     Сериализатор для модели объявления.

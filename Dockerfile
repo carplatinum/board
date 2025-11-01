@@ -6,7 +6,11 @@ WORKDIR /code
 
 COPY pyproject.toml poetry.lock ./
 
-RUN pip install --upgrade pip && pip install poetry && poetry config virtualenvs.create false && poetry install --without dev
+RUN pip install --upgrade pip \
+    && pip install poetry \
+    && poetry config virtualenvs.create false \
+    && poetry install --without dev \
+    && pip install gunicorn
 
 COPY . .
 
