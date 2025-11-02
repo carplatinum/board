@@ -56,7 +56,9 @@ jobs:
         run: poetry run python manage.py migrate
 
       - name: Run tests
-        run: poetry run pytest
+        run: |
+          export DJANGO_SETTINGS_MODULE=config.settings.base
+          poetry run pytest
 
       - name: Build Docker image
         run: docker build -t board:latest .
