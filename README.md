@@ -56,36 +56,36 @@ API построен с использованием Django REST Framework и д
 
 .env:  
 
-SECRET_KEY=your_secret_key_here
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1,yourdomain.com
+SECRET_KEY=your_secret_key_here  
+DEBUG=True  
+ALLOWED_HOSTS=localhost,127.0.0.1,yourdomain.com  
+  
+POSTGRES_DB=board_db  
+POSTGRES_USER=board_user  
+POSTGRES_PASSWORD=board_password  
+POSTGRES_HOST=db  
+POSTGRES_PORT=5432  
+  
+REDIS_URL=redis://redis:6379/0  
 
-POSTGRES_DB=board_db
-POSTGRES_USER=board_user
-POSTGRES_PASSWORD=board_password
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-
-REDIS_URL=redis://redis:6379/0
-
-CORS_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1
-
+CORS_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1  
+  
 ## Запуск и разработка
 
 Клонируйте репозиторий и создайте .env файл с нужными значениями.
 
 Убедитесь, что докер установлен.
 
-### Запустите контейнеры:
+1. Запустите контейнеры:
 
 docker-compose up -d --build
-### Выполните миграции:
+2. Выполните миграции:
 
 docker-compose exec backend python manage.py migrate
-### Создайте суперпользователя:
+3.  Создайте суперпользователя:
 
 docker-compose exec backend python manage.py createsuperuser
-### Доступ к приложению: http://localhost:8000/
+4. Доступ к приложению: http://localhost:8000/
 
 ## CI/CD
 - CI запускается при пушах в ветки main и develop.
@@ -98,13 +98,13 @@ docker-compose exec backend python manage.py createsuperuser
 
 - Для деплоя необходимо настроить GitHub Secrets:
 
-SERVER_IP — IP сервера
+SERVER_IP — IP сервера  
 
-SERVER_USER — пользователь SSH
+SERVER_USER — пользователь SSH  
 
-SERVER_SSH_KEY — приватный SSH ключ
+SERVER_SSH_KEY — приватный SSH ключ  
 
-DEPLOY_DIR — каталог на сервере для деплоя
+DEPLOY_DIR — каталог на сервере для деплоя  
 
 ## Контакты
 - Автор: mymillions@ya.ru
