@@ -54,9 +54,10 @@ jobs:
         run: docker build -t board:latest .
 
       - name: Login to Yandex Cloud Container Registry
-        uses: yc-actions/yc-coi-login@v1
+        uses: yc-actions/yc-cr-login@v3
         with:
-          token: ${{ secrets.YC_TOKEN }}
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON }}
+
 
       - name: Push Docker image to Yandex Container Registry
         run: |
