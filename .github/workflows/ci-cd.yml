@@ -131,11 +131,18 @@ jobs:
           port: 22
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
-            git pull origin develop
+            if [ ! -d ".git" ]; then
+              echo "Repository not found, cloning..."
+              git clone https://github.com/carplatinum/board .
+            else
+              echo "Repository found, pulling latest changes..."
+              git pull origin develop
+            fi
+
             if docker compose version &> /dev/null; then
               docker compose pull
               docker compose up -d --build
             else
               docker-compose pull
               docker-compose up -d --build
-            fi 
+            fi
