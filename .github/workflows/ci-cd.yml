@@ -37,21 +37,35 @@ jobs:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       REDIS_URL: redis://localhost:6379/0
-      DJANGO_SETTINGS_MODULE: config.settings.base   # Добавлена переменная окружения
+      DJANGO_SETTINGS_MODULE: config.settings.base  # Установка переменной среды
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.13'
 
       - name: Install Poetry
-        run: pip install poetry
+        uses: abatilo/actions-poetry@v4
 
-      - name: Install dependencies
-        run: poetry install
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+
+      - name: Cache Poetry virtual environment
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies (with dev)
+        run: poetry install --with dev --no-interaction --no-ansi
+
+      - name: Show Poetry environment info
+        run: poetry env info
 
       - name: Clear any old migration cache and pycache
         run: |
@@ -62,7 +76,7 @@ jobs:
       - name: Run migrations
         run: poetry run python manage.py migrate
 
-      - name: Run tests (pytest)
+      - name: Run tests
         run: poetry run pytest -v
 
       - name: Build Docker image without cache
