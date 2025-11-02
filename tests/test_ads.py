@@ -9,23 +9,21 @@ from apps.users.models import User
 class TestAdsAPI:
     @pytest.fixture(autouse=True)
     def setup(self):
-        # Создаём пользователя-владельца для тестов
         self.user = User.objects.create_user(
             username="testuser",
             email="testuser@example.com",
             password="password123"
         )
         self.client = APIClient()
-        # Авторизуем клиента
         self.client.force_authenticate(user=self.user)
 
     def test_ads_list(self):
-        url = reverse("ads-list")
+        url = reverse("ads:ads-list")
         response = self.client.get(url)
         assert response.status_code == status.HTTP_200_OK
 
     def test_create_ad(self):
-        url = reverse("ads-list")
+        url = reverse("ads:ads-list")
         data = {
             "title": "Test Ad",
             "description": "Test description",
@@ -33,21 +31,19 @@ class TestAdsAPI:
         }
         response = self.client.post(url, data, format="json")
         assert response.status_code == status.HTTP_201_CREATED
-        # Проверяем, что объявление создано и владелец совпадает
         ad = Ad.objects.get(title="Test Ad")
         assert ad.owner == self.user
         assert ad.description == "Test description"
         assert str(ad.price) == "99.99"
 
     def test_update_ad_owner(self):
-        # Создаём объявление владельцем
         ad = Ad.objects.create(
             title="Old Title",
             description="Old description",
             price=10.0,
             owner=self.user
         )
-        url = reverse("ads-detail", args=[ad.id])
+        url = reverse("ads:ads-detail", args=[ad.id])
         data = {
             "title": "Updated Title",
             "description": "Updated description",
@@ -66,14 +62,13 @@ class TestAdsAPI:
             price=50.0,
             owner=self.user
         )
-        url = reverse("ads-detail", args=[ad.id])
+        url = reverse("ads:ads-detail", args=[ad.id])
         response = self.client.delete(url)
         assert response.status_code == status.HTTP_204_NO_CONTENT
         with pytest.raises(Ad.DoesNotExist):
             Ad.objects.get(id=ad.id)
 
     def test_update_ad_not_owner(self):
-        # Создаём другого пользователя и объявление от него
         other_user = User.objects.create_user(
             username="otheruser",
             email="otheruser@example.com",
@@ -85,8 +80,7 @@ class TestAdsAPI:
             price=100,
             owner=other_user
         )
-        url = reverse("ads-detail", args=[ad.id])
+        url = reverse("ads:ads-detail", args=[ad.id])
         data = {"title": "Hacked Title"}
-        # Попытка изменения чужого объявления должна быть запрещена
         response = self.client.patch(url, data, format="json")
         assert response.status_code == status.HTTP_403_FORBIDDEN
