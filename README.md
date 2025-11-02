@@ -1,87 +1,111 @@
-# Board - Backend доска объявлений
-Простой backend для доски объявлений, реализованный на  
-Django 5, Django REST Framework с JWT авторизацией, Celery, Redis, PostgreSQL, Docker и развертыванием в Yandex Cloud.
+# Board — Простая доска объявлений
+Board — это простой backend для доски объявлений с аутентификацией, CRUD для объявлений и пользователей, асинхронными задачами и CI/CD.
 
-# Технологии  
-- Python 3.13, Django 5.x
+## Функционал
+- Регистрация, аутентификация, управление пользователями через JWT
 
-- PostgreSQL, PgAdmin 4
+- Создание, редактирование, удаление и просмотр объявлений
 
-- Django REST Framework + djangorestframework-simplejwt (JWT)
+- Разрешения: пользователи могут редактировать и удалять только свои объявления
 
-- Celery с Redis брокером
+- Асинхронные задачи на Celery с Redis брокером
+
+- Планирование фоновых заданий через django-celery-beat
+
+- Тесты с Pytest и автоматическая проверка качества кода
+
+- CORS поддержка для фронтенда
+
+## Технологии  
+
+- Python 3.13, Django 5.1, Django REST Framework
+
+- PostgreSQL 15
+
+- Celery, Redis
 
 - Docker, Docker Compose
 
 - GitHub Actions для CI/CD
 
-- CORS support
+- Nginx для статических файлов и реверс-прокси
 
-# Структура проекта  
-- apps/users — управление пользователями
+- Python-dotenv для управления переменными окружения
 
-- apps/ads — объявления
+- Black, flake8, isort для качества кода
 
-- board/ — конфигурация Django проекта и celery.py
+## API
+API построен с использованием Django REST Framework и доступен по адресу /api/.
 
-- docker-compose.yml — для локального запуска и разработки
+## Основные эндпоинты:
 
-- CI/CD workflow в .github/workflows/ci-cd.yml
+/api/users/ — управление пользователями (CRUD, регистрация, просмотр)
 
-# Установка и запуск
-1. Клонирование и установка зависимостей
+/api/ads/ — управление объявлениями
 
-git clone <репозиторий>
-cd board
-poetry install
-2. Создание и настройка .env файла
-Создайте .env в корне проекта со следующими переменными:
+### JWT токены можно получить через стандартные эндпоинты аутентификации Simple JWT:
 
-SECRET_KEY=your-secret-key
+/api/token/ — получение access и refresh токенов
+
+/api/token/refresh/ — обновление access токена
+
+Требуется авторизация для создания, изменения и удаления ресурсов.
+
+## Переменные окружения (.env)
+Обязательные переменные:  
+
+.env:  
+
+SECRET_KEY=your_secret_key_here
 DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
+ALLOWED_HOSTS=localhost,127.0.0.1,yourdomain.com
 
 POSTGRES_DB=board_db
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_password
+POSTGRES_USER=board_user
+POSTGRES_PASSWORD=board_password
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
 
 REDIS_URL=redis://redis:6379/0
 
 CORS_ALLOWED_ORIGINS=http://localhost,http://127.0.0.1
-3. Запуск базы данных и Redis через Docker Compose
 
-- docker-compose up -d db redis
-- Или используйте PgAdmin для управления базой.
+## Запуск и разработка
 
-4. Примените миграции
+Клонируйте репозиторий и создайте .env файл с нужными значениями.
 
-- docker-compose exec backend python manage.py migrate
-5. Запуск сервера разработки
+Убедитесь, что докер установлен.
 
-- docker-compose exec backend python manage.py runserver 0.0.0.0:8000
-6. Запуск Celery воркера и Celery beat
+### Запустите контейнеры:
 
-- docker-compose exec celery celery -A config worker -l info
-- docker-compose exec celery-beat celery -A config beat -l info --scheduler django_celery_beat.schedulers.DatabaseScheduler
-- Docker локально и деплой
-- Для локальной разработки и деплоя используется docker-compose.yml и Dockerfile.
+docker-compose up -d --build
+### Выполните миграции:
 
-## Для сборки и запуска локально:
+docker-compose exec backend python manage.py migrate
+### Создайте суперпользователя:
 
-- docker-compose up --build
-- В контейнере backend установлен Gunicorn в качестве WSGI-сервера.
+docker-compose exec backend python manage.py createsuperuser
+### Доступ к приложению: http://localhost:8000/
 
-- Файлы с миграциями и статикой монтируются через тома для удобства разработки.
+## CI/CD
+- CI запускается при пушах в ветки main и develop.
 
-# CI/CD
-Интеграция настроена с GitHub Actions.
+- Проверяется стиль кодирования (flake8), запускаются тесты (pytest).
 
-Автоматическая сборка, тестирование и деплой контейнеров в Yandex Cloud VM.
+- Сборка Docker образов backend и nginx.
 
-Можно использовать GitHub Secrets для безопасного хранения переменных окружения.
+- Деплой на удалённый сервер с помощью SSH и запуск Docker Compose.
 
-# Контакты  
-- Автор: mymillions@ya.ru 
+- Для деплоя необходимо настроить GitHub Secrets:
+
+SERVER_IP — IP сервера
+
+SERVER_USER — пользователь SSH
+
+SERVER_SSH_KEY — приватный SSH ключ
+
+DEPLOY_DIR — каталог на сервере для деплоя
+
+## Контакты
+- Автор: mymillions@ya.ru
 - Лицензия: MIT
