@@ -104,12 +104,12 @@ jobs:
     needs: docker-build
 
     steps:
-      - name: Check docker compose version on server
+      - name: Deploy to server: check docker compose version
         uses: appleboy/ssh-action@v0.1.9
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: 22
           script: |
             echo "Checking docker-compose version on server..."
@@ -122,12 +122,12 @@ jobs:
               exit 1
             fi
 
-      - name: Deploy to server
+      - name: Deploy to server: pull & up docker compose
         uses: appleboy/ssh-action@v0.1.9
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: 22
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
