@@ -69,9 +69,8 @@ jobs:
 
       - name: Clear any old migration cache and pycache
         run: |
-          find . -path "*/migrations/*.pyc" -delete
-          find . -path "*/migrations/__pycache__" -delete
-          find . -name "__pycache__" -delete
+          find . -name "*.pyc" -delete
+          find . -type d -name "__pycache__" -exec rm -rf {} +
 
       - name: Run migrations
         run: poetry run python manage.py migrate
