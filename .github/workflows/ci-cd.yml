@@ -94,7 +94,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build backend Docker image
-        run: docker build -t board_backend -f Dockerfile.backend .
+        run: docker build -t board_backend .
 
       - name: Build nginx Docker image
         run: docker build -t board_nginx -f Dockerfile.nginx .
