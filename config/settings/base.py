@@ -63,12 +63,16 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("POSTGRES_DB", "board_db"),
-        "USER": os.getenv("POSTGRES_USER", "postgres"),
+        "USER": os.getenv("POSTGRES_USER", "board_user"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "board_password"),
-        "HOST": os.getenv("POSTGRES_HOST", "db"),  # Изменено с localhost на db
+        "HOST": os.getenv("POSTGRES_HOST", "db"),
         "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
+
+# Автоматическое подставление хоста базы для CI среды
+if os.getenv("GITHUB_ACTIONS") or os.getenv("CI"):
+    DATABASES["default"]["HOST"] = "localhost"
 
 AUTH_USER_MODEL = "users.User"
 
