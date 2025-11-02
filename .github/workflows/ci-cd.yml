@@ -132,17 +132,12 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
             if [ ! -d ".git" ]; then
-              echo "Repository not found, cloning..."
-              git clone https://github.com/carplatinum/board .
+              echo "Repository not found, cleaning folder and cloning..."
+              rm -rf ./* ./.??*
+              git clone https://github.com/carplatinum/board.git .
             else
               echo "Repository found, pulling latest changes..."
+              git reset --hard
+              git clean -fd
               git pull origin develop
-            fi
-
-            if docker compose version &> /dev/null; then
-              docker compose pull
-              docker compose up -d --build
-            else
-              docker-compose pull
-              docker-compose up -d --build
             fi
