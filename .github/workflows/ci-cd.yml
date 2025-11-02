@@ -52,14 +52,6 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          for i in `seq 1 10`; do
-            pg_isready -h localhost -p 5432 && break
-            echo "Waiting for database..."
-            sleep 5
-          done
-
       - name: Run migrations
         run: poetry run python manage.py migrate
 
@@ -70,9 +62,9 @@ jobs:
         run: docker build -t board:latest .
 
       - name: Login to Yandex Cloud Container Registry
-        uses: yc-actions/yc-cr-login@v3
+        uses: yc-actions/yc-coi-login@v1
         with:
-          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON }}
+          token: ${{ secrets.YC_TOKEN }}
 
       - name: Push Docker image to Yandex Container Registry
         run: |

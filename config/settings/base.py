@@ -63,19 +63,12 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("POSTGRES_DB", "board_db"),
-        "USER": os.getenv("POSTGRES_USER", "board_user"),
+        "USER": os.getenv("POSTGRES_USER", "postgres"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "board_password"),
-        # По умолчанию для локального докера и продакшена
-        "HOST": os.getenv("POSTGRES_HOST", "db"),
+        "HOST": os.getenv("POSTGRES_HOST", "db"),  # Изменено с localhost на db
         "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
-
-# При запуске в GitHub Actions изменить хост на localhost для доступа к сервису postgres
-if os.getenv("GITHUB_WORKFLOW") or os.getenv("CI"):
-    DATABASES['default'].update({
-        "HOST": "localhost",
-    })
 
 AUTH_USER_MODEL = "users.User"
 
@@ -110,13 +103,13 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost,http://127.0.0.1").split(",")
 
-CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")  # Изменено с localhost на redis
 CELERY_RESULT_BACKEND = os.getenv("REDIS_URL", "redis://redis:6379/0")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
