@@ -37,6 +37,7 @@ jobs:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       REDIS_URL: redis://localhost:6379/0
+      DJANGO_SETTINGS_MODULE: config.settings.base   # Добавлена переменная окружения
 
     steps:
       - uses: actions/checkout@v4
@@ -52,16 +53,24 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      - name: Clear any old migration cache and pycache
+        run: |
+          find . -path "*/migrations/*.pyc" -delete
+          find . -path "*/migrations/__pycache__" -delete
+          find . -name "__pycache__" -delete
+
       - name: Run migrations
         run: poetry run python manage.py migrate
 
-      - name: Run tests
+      - name: Show registered URLs (debug)
         run: |
-          export DJANGO_SETTINGS_MODULE=config.settings.base
-          poetry run pytest
+          poetry run python -c "from django.urls import get_resolver; print(list(get_resolver().reverse_dict.keys()))"
 
-      - name: Build Docker image
-        run: docker build -t board:latest .
+      - name: Run tests
+        run: poetry run pytest
+
+      - name: Build Docker image without cache
+        run: docker build --no-cache -t board:latest .
 
       - name: Login to Yandex Cloud Container Registry
         uses: yc-actions/yc-cr-login@v3
