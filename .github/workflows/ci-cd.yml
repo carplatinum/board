@@ -30,6 +30,14 @@ jobs:
         ports:
           - 6379:6379
 
+    env:
+      POSTGRES_DB: board_db
+      POSTGRES_USER: board_user
+      POSTGRES_PASSWORD: board_password
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      REDIS_URL: redis://localhost:6379/0
+
     steps:
       - uses: actions/checkout@v4
 
@@ -44,6 +52,14 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          for i in `seq 1 10`; do
+            pg_isready -h localhost -p 5432 && break
+            echo "Waiting for database..."
+            sleep 5
+          done
+
       - name: Run migrations
         run: poetry run python manage.py migrate
 
@@ -54,9 +70,9 @@ jobs:
         run: docker build -t board:latest .
 
       - name: Login to Yandex Cloud Container Registry
-        uses: yc-actions/yc-coi-login@v1
+        uses: yc-actions/yc-cr-login@v3
         with:
-          token: ${{ secrets.YC_TOKEN }}
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON }}
 
       - name: Push Docker image to Yandex Container Registry
         run: |
