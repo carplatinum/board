@@ -62,10 +62,6 @@ jobs:
       - name: Run migrations
         run: poetry run python manage.py migrate
 
-      - name: Show registered URLs (debug)
-        run: |
-          poetry run python -c "from django.urls import get_resolver; print(list(get_resolver().reverse_dict.keys()))"
-
       - name: Run tests
         run: poetry run pytest
 
