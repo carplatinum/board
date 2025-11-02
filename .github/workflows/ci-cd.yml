@@ -125,9 +125,9 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@v0.1.9
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: 22
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
