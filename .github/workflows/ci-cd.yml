@@ -97,7 +97,7 @@ jobs:
         run: docker build -t board_backend .
 
       - name: Build nginx Docker image
-        run: docker build -t board_nginx -f Dockerfile.nginx .
+        run: docker build -t board_nginx .
 
   deploy:
     runs-on: ubuntu-latest
