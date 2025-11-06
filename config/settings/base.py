@@ -65,7 +65,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB", "board_db"),
         "USER": os.getenv("POSTGRES_USER", "board_user"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "board_password"),
-        "HOST": os.getenv("POSTGRES_HOST", "db"),
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
         "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
@@ -107,7 +107,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost,http://127.0.0.1").split(",")
 
-CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")  # Изменено с localhost на redis
+CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = os.getenv("REDIS_URL", "redis://redis:6379/0")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"

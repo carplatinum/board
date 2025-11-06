@@ -10,6 +10,9 @@ from apps.users.models import User
 class TestAdsAPI:
     @pytest.fixture(autouse=True)
     def setup(self):
+        """
+        Создает тестового пользователя и аутентифицирует API-клиент.
+        """
         self.user = User.objects.create_user(
             username="testuser",
             email="testuser@example.com",
@@ -19,11 +22,18 @@ class TestAdsAPI:
         self.client.force_authenticate(user=self.user)
 
     def test_ads_list(self):
+        """
+        Проверяет успешное получение списка объявлений.
+        """
         url = reverse("ads:ads-list")
         response = self.client.get(url)
         assert response.status_code == status.HTTP_200_OK
 
     def test_create_ad(self):
+        """
+        Проверяет создание нового объявления.
+        Убеждается, что объявление создано с правильными данными и связано с владельцем.
+        """
         url = reverse("ads:ads-list")
         data = {
             "title": "Test Ad",
@@ -38,6 +48,9 @@ class TestAdsAPI:
         assert str(ad.price) == "99.99"
 
     def test_update_ad_owner(self):
+        """
+        Проверяет, что владелец объявления может обновить его.
+        """
         ad = Ad.objects.create(
             title="Old Title",
             description="Old description",
@@ -57,6 +70,9 @@ class TestAdsAPI:
         assert ad.price == 20.00
 
     def test_delete_ad_owner(self):
+        """
+        Проверяет, что владелец может удалить объявление.
+        """
         ad = Ad.objects.create(
             title="Ad To Delete",
             description="To be deleted",
@@ -70,6 +86,9 @@ class TestAdsAPI:
             Ad.objects.get(id=ad.id)
 
     def test_update_ad_not_owner(self):
+        """
+        Проверяет запрет обновления объявления не владельцем.
+        """
         other_user = User.objects.create_user(
             username="otheruser",
             email="otheruser@example.com",
